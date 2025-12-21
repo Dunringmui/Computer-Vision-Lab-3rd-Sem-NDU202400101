@@ -1,6 +1,6 @@
 **List of Experiments**
 
-Experiment 1: Image /Video Reading and Display
+Experiment 1: Image/Video Reading and Display
 
 Experiment 2: Image Transformations
 
