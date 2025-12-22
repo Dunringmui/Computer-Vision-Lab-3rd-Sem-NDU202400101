@@ -1,38 +1,63 @@
 import cv2
 import numpy as np
 
-def process_motion_blur(image_path, size=40):
-    # 1. Load the original image
-    original = cv2.imread(image_path)
-    
-    if original is None:
-        print(f"Error: Could not find '{image_path}'")
-        return
 
-    # 2. Create the Motion Blur Kernel (Horizontal)
-    # A horizontal line of 1s in the center of the matrix
-    kernel = np.zeros((size, size))
-    kernel[int((size - 1) / 2), :] = np.ones(size)
-    kernel /= size  # Normalize to maintain original image brightness
+# Load Image (COLOR)
+image_path = "apple.jpg"
+image = cv2.imread(image_path)
 
-    # 3. Apply Convolution using the kernel
-    blurred = cv2.filter2D(original, -1, kernel)
+if image is None:
+    print("Error: Image not found!")
+    exit()
 
-    # 4. Create the side-by-side comparison
-    # np.hstack joins the original and blurred arrays horizontally
-    comparison = np.hstack((original, blurred))
+# Resize for uniform comparison
+image = cv2.resize(image, (400, 300))
 
-    # 5. Store the output (the side-by-side image)
-    output_path = "Output.jpg"
-    cv2.imwrite(output_path, comparison)
-    print(f"Comparison image saved successfully as: {output_path}")
+# Smoothing Filter (Averaging)
+kernel = np.ones((5, 5), np.float32) / 25
+smoothed = cv2.filter2D(image, -1, kernel)
 
-    # 6. Display the results in a window
-    cv2.imshow('Original (Left) vs Motion Blur (Right)', comparison)
-    
-    print("Press any key on the image window to exit.")
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+# Motion Blur Simulation (COLOR)
+size = 15
+motion_kernel = np.zeros((size, size))
+motion_kernel[int((size - 1) / 2), :] = np.ones(size)
+motion_kernel = motion_kernel / size
 
-# Execute the function
-process_motion_blur("sample_image.jpg", size=40)
+motion_blur = cv2.filter2D(image, -1, motion_kernel)
+
+# Combine Images Side by Side
+comparison_images = np.hstack((image, smoothed, motion_blur))
+
+# Create Label Area (Outside Image)
+label_height = 50
+label_area = np.ones(
+    (label_height, comparison_images.shape[1], 3),
+    dtype=np.uint8
+) * 255  # white background
+
+# Image width
+w = image.shape[1]
+
+# Add text labels centered below each image
+cv2.putText(label_area, "Original Image", (w//2 - 80, 35),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+
+cv2.putText(label_area, "Filtered Image", (w + w//2 - 80, 35),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+
+cv2.putText(label_area, "Motion Blur Image", (2*w + w//2 - 110, 35),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+
+# Stack Images + Labels Vertically
+final_output = np.vstack((comparison_images, label_area))
+
+# Display Output
+cv2.imshow("Output", final_output)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# Save Output Image
+output_path = "Output.jpg"
+cv2.imwrite(output_path, final_output)
+
+print(f"Comparison image saved as {output_path}")
