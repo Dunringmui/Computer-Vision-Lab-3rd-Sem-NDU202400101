@@ -1,6 +1,7 @@
 **List of Experiments**
 
-Experiment 1: Image/Video Reading and Display: Develop a Python program using OpenCV to demonstrate image acquisition and video acquisition
+Experiment 1: Image/Video Reading and Display
+Develop a Python program using OpenCV to demonstrate image acquisition and video acquisition
 by reading images in multiple modes and capturing live video from a camera, displaying and storing
 the video stream.
 
