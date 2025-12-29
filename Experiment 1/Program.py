@@ -5,7 +5,6 @@ from datetime import datetime
 
 # Configuration
 IMAGE_PATH = "sample_image.jpg"
-VIDEO_PATH = "sample_video.mp4"
 OUTPUT_DIR = "opencv_output"
 
 # Create output directory
@@ -130,64 +129,6 @@ def capture_live_video(camera_index=0):
     print(f"Saved: {output_file}")
     print(f"{'='*60}\n")
 
-
-def play_video(video_path):
-    """Play a saved video file."""
-    print(f"\n{'='*60}")
-    print("VIDEO PLAYBACK")
-    print(f"{'='*60}")
-    
-    if not os.path.exists(video_path):
-        print(f"Error: Video file '{video_path}' not found!")
-        return
-    
-    cap = cv2.VideoCapture(video_path)
-    
-    if not cap.isOpened():
-        print(f"Error: Could not open video file")
-        return
-    
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
-    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    
-    print(f"✓ {width}x{height} @ {fps} FPS | {frame_count} frames")
-    print("*** Click on the video window first! ***")
-    print("Press 'q' or ESC to stop playback\n")
-    
-    frame_num = 0
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        
-        frame_num += 1
-        cv2.putText(frame, f"Frame: {frame_num}/{frame_count}", (10, 30),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-        
-        cv2.imshow('Video Playback', frame)
-        
-        key = cv2.waitKey(int(1000/fps)) & 0xFF
-        if key == ord('q') or key == ord('Q') or key == 27:  # q, Q, or ESC
-            break
-    
-    cap.release()
-    cv2.destroyAllWindows()
-    print(f"Playback complete\n")
-
-
-def create_test_image():
-    """Create a sample test image."""
-    img = np.zeros((480, 640, 3), dtype=np.uint8)
-    cv2.rectangle(img, (50, 50), (590, 430), (0, 255, 0), -1)
-    cv2.circle(img, (320, 240), 100, (255, 0, 0), -1)
-    cv2.putText(img, "OpenCV Test Image", (150, 250),
-               cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 3)
-    cv2.imwrite(IMAGE_PATH, img)
-    print(f"✓ Test image created: {IMAGE_PATH}")
-
-
 def main():
     """Main menu."""
     print("\n" + "="*60)
@@ -214,4 +155,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
