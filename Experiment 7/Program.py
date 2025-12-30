@@ -7,8 +7,8 @@ if img is None:
     print("Error: Could not load 'apple.jpg'.")
     exit()
 
-# 2. Resize for smaller display (50% scale)
-scale = 0.5
+# 2. Resize 
+scale = 1
 img_small = cv2.resize(img, (0, 0), fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
 gray = cv2.cvtColor(img_small, cv2.COLOR_BGR2GRAY)
 
@@ -41,19 +41,15 @@ harris_out = img_small.copy()
 harris_out[harris_dst > 0.01 * harris_dst.max()] = [0, 0, 255]
 harris_labeled = add_labeled_overlay(harris_out, "Harris")
 
-# SIFT Feature Detection
-sift = cv2.SIFT_create()
-kp, _ = sift.detectAndCompute(gray, None)
-sift_out = cv2.drawKeypoints(img_small, kp, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-sift_labeled = add_labeled_overlay(sift_out, "SIFT")
 
 # --- COMBINE AND STORE ---
-# Horizontal concatenation: [Original | Harris | SIFT]
-combined_output = np.concatenate((original_labeled, harris_labeled, sift_labeled), axis=1)
+# Horizontal concatenation: [Original | Harris]
+combined_output = np.concatenate((original_labeled, harris_labeled), axis=1)
 
 cv2.imwrite('Output.jpg', combined_output)
 cv2.imshow('Final Detection Results', combined_output)
 
 print("Image saved as 'Output.jpg'")
 cv2.waitKey(0)
+
 cv2.destroyAllWindows()
