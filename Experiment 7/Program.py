@@ -4,7 +4,7 @@ import numpy as np
 # 1. Load the image
 img = cv2.imread('apple.jpg')
 if img is None:
-    print("Error: Could not load 'apple.jpg'.")
+    print("Error: Could not load the image.")
     exit()
 
 # 2. Resize 
@@ -53,3 +53,4 @@ print("Image saved as 'Output.jpg'")
 cv2.waitKey(0)
 
 cv2.destroyAllWindows()
+
